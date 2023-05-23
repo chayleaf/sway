@@ -390,6 +390,7 @@ runtime.
 
 *bindsym* [--whole-window] [--border] [--exclude-titlebar] [--release] [--locked] \
 [--to-code] [--input-device=<device>] [--no-warn] [--no-repeat] [--inhibited] \
+[--allow-other] \
 [Group<1-4>+]<key combo> <command>
 	Binds _key combo_ to execute the sway command _command_ when pressed. You
 	may use XKB key names here (*wev*(1) is a good tool for discovering these).
@@ -418,6 +419,11 @@ runtime.
 	Unless the flag _--no-repeat_ is set, the command will be run
 	repeatedly when the key is held, according to the repeat
 	settings specified in the input configuration.
+
+	If _--allow-other_ is set, any key sequence containing this key sequence
+	may trigger this binding. For example, a single-key binding with
+	_--allow-other_ set may be executed upon the simultaneous press of one
+	or more keys, one of which is the binding's key.
 
 	Bindings to keysyms are layout-dependent. This can be changed with the
 	_--to-code_ flag. In this case, the keysyms will be translated into the
