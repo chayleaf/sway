@@ -129,7 +129,7 @@ static void arrange_layer(struct sway_output *output, struct wl_list *list,
 	struct wlr_box full_area = { 0 };
 	wlr_output_effective_resolution(output->wlr_output,
 			&full_area.width, &full_area.height);
-	wl_list_for_each(sway_layer, list, link) {
+	wl_list_for_each_reverse(sway_layer, list, link) {
 		struct wlr_layer_surface_v1 *layer = sway_layer->layer_surface;
 		struct wlr_layer_surface_v1_state *state = &layer->current;
 		if (exclusive != (state->exclusive_zone > 0)) {
