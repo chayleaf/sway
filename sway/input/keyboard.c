@@ -404,7 +404,9 @@ static void handle_key_event(struct sway_keyboard *keyboard,
 		keyboard->seat_device->input_device->wlr_device;
 	char *device_identifier = input_device_get_identifier(wlr_device);
 	bool exact_identifier = keyboard->wlr->group != NULL;
-	seat_idle_notify_activity(seat, IDLE_SOURCE_KEYBOARD);
+	if (event->keycode != XKB_KEY_XF86AudioLowerVolume && event->keycode != XKB_KEY_XF86AudioRaiseVolume) {
+		seat_idle_notify_activity(seat, IDLE_SOURCE_KEYBOARD);
+	}
 	bool input_inhibited = seat->exclusive_client != NULL ||
 		server.session_lock.locked;
 	struct sway_keyboard_shortcuts_inhibitor *sway_inhibitor =
