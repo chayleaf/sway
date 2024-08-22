@@ -1132,7 +1132,7 @@ static void container_fullscreen_workspace(struct sway_container *con) {
 	con->saved_height = con->pending.height;
 
 	if (con->pending.workspace) {
-		con->pending.workspace->fullscreen = con;
+		// con->pending.workspace->fullscreen = con;
 		struct sway_seat *seat;
 		struct sway_workspace *focus_ws;
 		wl_list_for_each(seat, &server.input->seats, link) {
@@ -1159,7 +1159,7 @@ static void container_fullscreen_global(struct sway_container *con) {
 	}
 	set_fullscreen(con, true);
 
-	root->fullscreen_global = con;
+	// root->fullscreen_global = con;
 	con->saved_x = con->pending.x;
 	con->saved_y = con->pending.y;
 	con->saved_width = con->pending.width;

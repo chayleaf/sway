@@ -34,6 +34,7 @@
 #include "sway/xdg_decoration.h"
 #include "pango.h"
 #include "stringop.h"
+#include "sway/layers.h"
 
 void view_init(struct sway_view *view, enum sway_view_type type,
 		const struct sway_view_impl *impl) {
@@ -239,6 +240,23 @@ static bool gaps_to_edge(struct sway_view *view) {
 	return gaps.top > 0 || gaps.right > 0 || gaps.bottom > 0 || gaps.left > 0;
 }
 
+void calculate_exclusive(struct sway_output *output, struct wlr_box *usable_area) {
+	struct sway_layer_surface *sway_layer;
+	for (int i = ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND; i <= ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY; ++i) {
+		struct wl_list *list = &output->layers[i];
+		wl_list_for_each_reverse(sway_layer, list, link) {
+			struct wlr_layer_surface_v1 *layer = sway_layer->layer_surface;
+			struct wlr_layer_surface_v1_state *state = &layer->current;
+			if (state->exclusive_zone <= 0) {
+				continue;
+			}
+			apply_exclusive(usable_area, state->anchor, state->exclusive_zone,
+			state->margin.top, state->margin.right,
+					state->margin.bottom, state->margin.left);
+		}
+	}
+}
+
 void view_autoconfigure(struct sway_view *view) {
 	struct sway_container *con = view->container;
 	struct sway_workspace *ws = con->pending.workspace;
@@ -250,16 +268,30 @@ void view_autoconfigure(struct sway_view *view) {
 	struct sway_output *output = ws ? ws->output : NULL;
 
 	if (con->pending.fullscreen_mode == FULLSCREEN_WORKSPACE) {
-		con->pending.content_x = output->lx;
-		con->pending.content_y = output->ly;
-		con->pending.content_width = output->width;
-		con->pending.content_height = output->height;
+		struct wlr_box box = {
+			.x = output->lx,
+			.y = output->ly,
+			.width = output->width,
+			.height = output->height,
+		};
+		calculate_exclusive(output, &box);
+		con->pending.content_x = box.x;
+		con->pending.content_y = box.y;
+		con->pending.content_width = box.width;
+		con->pending.content_height = box.height;
 		return;
 	} else if (con->pending.fullscreen_mode == FULLSCREEN_GLOBAL) {
-		con->pending.content_x = root->x;
-		con->pending.content_y = root->y;
-		con->pending.content_width = root->width;
-		con->pending.content_height = root->height;
+		struct wlr_box box = {
+			.x = root->x,
+			.y = root->y,
+			.width = root->width,
+			.height = root->height,
+		};
+		calculate_exclusive(output, &box);
+		con->pending.content_x = box.x;
+		con->pending.content_y = box.y;
+		con->pending.content_width = box.width;
+		con->pending.content_height = box.height;
 		return;
 	}
 

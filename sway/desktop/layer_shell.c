@@ -50,7 +50,7 @@ struct wlr_layer_surface_v1 *toplevel_layer_surface_from_surface(
 	} while (true);
 }
 
-static void apply_exclusive(struct wlr_box *usable_area,
+void apply_exclusive(struct wlr_box *usable_area,
 		uint32_t anchor, int32_t exclusive,
 		int32_t margin_top, int32_t margin_right,
 		int32_t margin_bottom, int32_t margin_left) {
