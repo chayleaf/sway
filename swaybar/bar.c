@@ -103,7 +103,7 @@ static void add_layer_surface(struct swaybar_output *output) {
 	output->layer_surface = zwlr_layer_shell_v1_get_layer_surface(
 			bar->layer_shell, output->surface, output->output,
 			hidden || overlay ? ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY :
-			ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM, "panel");
+			ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY, "panel");
 	assert(output->layer_surface);
 	zwlr_layer_surface_v1_add_listener(output->layer_surface,
 			&layer_surface_listener, output);
